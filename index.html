@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabulazione prove parallele IC Puddu</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #dfe5fc;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1a49e9;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        
+        .form-header {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #dfe5fc;
+            border-radius: 8px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        select, input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #3c78d8;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .header-yellow {
+            background-color: #dfe5fc !important;
+            color: black !important;
+        }
+        
+        .header-blue {
+            background-color: #1c4587 !important;
+            color: white !important;
+        }
+        
+        .header-light-blue {
+            background-color: #a4c2f4 !important;
+            color: black !important;
+        }
+        
+        /* Colori specifici per discipline */
+        .header-italiano {
+            background-color: #1c4587 !important; /* Blu */
+            color: white !important;
+        }
+        
+        .header-matematica {
+            background-color: #9c1810 !important; /* Rosso scuro */
+            color: white !important;
+        }
+        
+        .header-inglese {
+            background-color: #8e44ad !important; /* Viola */
+            color: white !important;
+        }
+        
+        .header-unica {
+            background-color: #e9531a !important; /* Arancione */
+            color: white !important;
+        }
+        
+        .score-warning {
+            background-color: #ffebee !important;
+            border: 2px solid #f44336 !important;
+        }
+        
+        .instructions-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #856404;
+        }
+        
+        .input-cell {
+            background-color: #f9f9f9;
+        }
+        
+        .score-input {
+            width: 80px;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        
+        .student-row {
+            background-color: white;
+        }
+        
+        .student-row:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .add-student-btn {
+            background-color: #06b698;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .add-student-btn:hover {
+            background-color: #059d83;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: #06b640;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #059d37;
+        }
+        
+        .btn-success {
+            background-color: #06b640;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #059d37;
+        }
+        
+        .btn-warning {
+            background-color: #dd5286;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #f71139;
+        }
+        
+        .email-info {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #06b640;
+        }
+        
+        .email-info strong {
+            color: #059d37;
+        }
+        
+        .discipline-fields {
+            display: none;
+        }
+        
+        .discipline-fields.active {
+            display: table-cell;
+        }
+        
+        .remove-student {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        
+        .remove-student:hover {
+            background-color: #c82333;
+        }
+        
+        @media (max-width: 768px) {
+            .form-header {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tabulazione prove parallele IC Puddu</h1>
+        
+        <div class="form-header">
+            <div class="form-group">
+                <label for="anno">Anno Scolastico:</label>
+                <select id="anno">
+                    <option value="2019/2020">2019/2020</option>
+                    <option value="2020/2021">2020/2021</option>
+                    <option value="2021/2022">2021/2022</option>
+                    <option value="2022/2023">2022/2023</option>
+                    <option value="2024/2025" selected>2024/2025</option>
+                    <option value="2024/2025">2024/2025</option>
+                    <option value="2025/2026">2025/2026</option>
+                    <option value="2026/2027">2026/2027</option>
+                    <option value="2027/2028">2027/2028</option>
+                    <option value="2028/2029">2028/2029</option>
+                    <option value="2029/2030">2029/2030</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="ordine">Ordine:</label>
+                <select id="ordine">
+                    <option value="">Seleziona ordine</option>
+                    <option value="Infanzia">Infanzia</option>
+                    <option value="Primaria">Primaria</option>
+                    <option value="Secondaria I grado">Secondaria I grado</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="plesso">Plesso:</label>
+                <select id="plesso">
+                    <option value="">Seleziona plesso</option>
+                    <option value="C. Puddu">C. Puddu</option>
+                    <option value="G. Rodari">G. Rodari</option>
+                    <option value="Don Bosco">Don Bosco</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="classe">Classe:</label>
+                <select id="classe">
+                    <option value="">Seleziona classe</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="sezione">Sezione:</label>
+                <select id="sezione">
+                    <option value="">Seleziona sezione</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="G">G</option>
+                    <option value="H">H</option>
+                    <option value="I">I</option>
+                    <option value="J">J</option>
+                    <option value="K">K</option>
+                    <option value="L">L</option>
+                    <option value="M">M</option>
+                    <option value="N">N</option>
+                    <option value="O">O</option>
+                    <option value="P">P</option>
+                    <option value="Q">Q</option>
+                    <option value="R">R</option>
+                    <option value="S">S</option>
+                    <option value="T">T</option>
+                    <option value="U">U</option>
+                    <option value="V">V</option>
+                    <option value="W">W</option>
+                    <option value="X">X</option>
+                    <option value="Y">Y</option>
+                    <option value="Z">Z</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="prova">Tipo di Prova:</label>
+                <select id="prova">
+                    <option value="Iniziale">Iniziale</option>
+                    <option value="Intermedia">Intermedia</option>
+                    <option value="Finale">Finale</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="disciplina">Disciplina:</label>
+                <select id="disciplina">
+                    <option value="Inglese">Inglese</option>
+                    <option value="Italiano">Italiano</option>
+                    <option value="Matematica">Matematica</option>
+                    <option value="Unica">Unica (Infanzia)</option>
+                </select>
+            </div>
+        </div>
+        
+        <button class="add-student-btn" onclick="addStudent()">+ Aggiungi Alunno</button>
+        
+        <div class="instructions-box">
+            ⚠️ INSERIRE I PUNTEGGI SU BASE 100
+        </div>
+        
+        <div class="table-container">
+            <table id="studentsTable">
+                <thead>
+                    <tr>
+                        <th style="background-color: #3c78d8;">COGNOME</th>
+                        <th style="background-color: #3c78d8;">NOME</th>
+                        <th style="background-color: #3c78d8;">CERTIFICATI</th>
+                        <th style="background-color: #3c78d8;">COMPETENZE LINGUISTICHE</th>
+                        
+                        <!-- Inglese (solo 2 ambiti) -->
+                        <th class="discipline-fields inglese-fields header-inglese">AMBITO 1<br>Comprensione scritta (Reading)</th>
+                        <th class="discipline-fields inglese-fields header-inglese">AMBITO 2<br>Comprensione orale (Listening)</th>
+                        
+                        <!-- Italiano -->
+                        <th class="discipline-fields italiano-fields header-italiano">AMBITO 1<br>Comprensione</th>
+                        <th class="discipline-fields italiano-fields header-italiano">AMBITO 2<br>Inferenze</th>
+                        <th class="discipline-fields italiano-fields header-italiano">AMBITO 3<br>Lessico</th>
+                        <th class="discipline-fields italiano-fields header-italiano">AMBITO 4<br>Grammatica</th>
+                        
+                        <!-- Matematica Primaria (3 ambiti) -->
+                        <th class="discipline-fields matematica-primaria-fields header-matematica">AMBITO 1<br>Numeri</th>
+                        <th class="discipline-fields matematica-primaria-fields header-matematica">AMBITO 2<br>Spazio e Figure</th>
+                        <th class="discipline-fields matematica-primaria-fields header-matematica">AMBITO 3<br>Relazioni, dati e previsioni</th>
+                        
+                        <!-- Matematica Secondaria (4 ambiti) -->
+                        <th class="discipline-fields matematica-secondaria-fields header-matematica">AMBITO 1<br>Numeri</th>
+                        <th class="discipline-fields matematica-secondaria-fields header-matematica">AMBITO 2<br>Spazio e Figure</th>
+                        <th class="discipline-fields matematica-secondaria-fields header-matematica">AMBITO 3<br>Dati e Previsioni</th>
+                        <th class="discipline-fields matematica-secondaria-fields header-matematica">AMBITO 4<br>Relazioni e Funzioni</th>
+                        
+                        <!-- Unica (Infanzia) -->
+                        <th class="discipline-fields unica-fields header-unica">AMBITO 1<br>Comprensione</th>
+                        <th class="discipline-fields unica-fields header-unica">AMBITO 2<br>Classificazione e Orientamento</th>
+                        
+                        <th class="header-blue">MEDIA</th>
+                        <th style="background-color: #28a745; color: white;">NOTE</th>
+                        <th style="background-color: #dc3545; color: white;">AZIONI</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsTableBody">
+                    <!-- Gli studenti saranno aggiunti dinamicamente qui -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="actions">
+            <button class="btn btn-primary" onclick="exportToExcel()">💾 Scarica File Excel</button>
+            <button class="btn btn-success" onclick="sendEmail()">📧 Invia via Email</button>
+            <button class="btn btn-warning" onclick="clearAll()">🗑️ Svuota Tutto</button>
+        </div>
+        
+        <div class="email-info">
+            <strong>📧 Indirizzo per la restituzione:</strong> prove.didattica@pudduprato.edu.it
+        </div>
+    </div>
+
+    <script>
+        let studentCounter = 0;
+        
+        // Inizializza la disciplina di default e crea 35 righe precompilate
+        document.addEventListener('DOMContentLoaded', function() {
+            // Crea subito 35 righe vuote
+            for (let i = 1; i <= 35; i++) {
+                createEmptyStudentRow(i);
+            }
+            studentCounter = 35; // Imposta il contatore a 35
+            
+            // Aggiorna i campi disciplina per tutte le righe create
+            setTimeout(() => {
+                updateDisciplineFields();
+            }, 100); // Piccolo delay per assicurarsi che tutte le righe siano create
+        });
+        
+        function createEmptyStudentRow(rowNumber) {
+            const tbody = document.getElementById('studentsTableBody');
+            const row = document.createElement('tr');
+            row.className = 'student-row';
+            row.id = `student-${rowNumber}`;
+            
+            row.innerHTML = `
+                <td class="input-cell"><input type="text" placeholder="Cognome" class="form-control" id="cognome-${rowNumber}" oninput="capitalizeInput(this)"></td>
+                <td class="input-cell"><input type="text" placeholder="Nome" class="form-control" id="nome-${rowNumber}" oninput="capitalizeInput(this)"></td>
+                <td class="input-cell">
+                    <select class="form-control" id="certificati-${rowNumber}">
+                        <option value="">-</option>
+                        <option value="no">no</option>
+                        <option value="L. 170 (D.S.A.)">L. 170 (D.S.A.)</option>
+                        <option value="L. 104 (H)">L. 104 (H)</option>
+                        <option value="B.E.S.">B.E.S.</option>
+                    </select>
+                </td>
+                <td class="input-cell">
+                    <select class="form-control" id="competenze-${rowNumber}">
+                        <option value="">-</option>
+                        <option value="Italofono">Italofono</option>
+                        <option value="Livello A">Livello A</option>
+                        <option value="Livello B">Livello B</option>
+                        <option value="Livello Iniziale">Livello Iniziale</option>
+                    </select>
+                </td>
+            `;
+            
+            // Aggiungi cella media
+            const mediaCell = document.createElement('td');
+            mediaCell.className = 'input-cell';
+            mediaCell.style.textAlign = 'center';
+            mediaCell.innerHTML = `<span id="media-${rowNumber}" style="font-weight: bold; color: #1155CC;">-</span>`;
+            row.appendChild(mediaCell);
+            
+            // Aggiungi cella note
+            const noteCell = document.createElement('td');
+            noteCell.className = 'input-cell';
+            noteCell.innerHTML = `<input type="text" placeholder="Note..." id="note-${rowNumber}" style="width: 100%; border: none; padding: 5px;">`;
+            row.appendChild(noteCell);
+            
+            // Aggiungi cella numero riga e pulsante rimuovi
+            const actionCell = document.createElement('td');
+            actionCell.style.textAlign = 'center';
+            actionCell.style.padding = '5px';
+            
+            // Tutti gli alunni hanno il pulsante rimuovi + numero riga
+            actionCell.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                    <button class="remove-student" onclick="removeStudent(${rowNumber})" style="font-size: 10px; padding: 2px 6px;">Rimuovi</button>
+                    <span style="font-size: 11px; color: #666; font-weight: bold;">${rowNumber}</span>
+                </div>
+            `;
+            row.appendChild(actionCell);
+            
+            tbody.appendChild(row);
+        }
+        
+        // Aggiorna i campi quando cambia la disciplina, ordine o plesso
+        document.getElementById('disciplina').addEventListener('change', updateDisciplineFields);
+        document.getElementById('ordine').addEventListener('change', updateDisciplineFields);
+        
+        function updateDisciplineFields() {
+            const disciplina = document.getElementById('disciplina').value.toLowerCase();
+            const ordine = document.getElementById('ordine').value;
+            const isSecondaria = ordine === 'Secondaria I grado';
+            
+            // Nascondi tutti i campi disciplina
+            const allFields = document.querySelectorAll('.discipline-fields');
+            allFields.forEach(field => {
+                field.classList.remove('active');
+                field.style.display = 'none';
+            });
+            
+            // Mostra solo i campi della disciplina selezionata
+            if (disciplina === 'matematica' && isSecondaria) {
+                // Matematica Secondaria: 4 ambiti
+                const disciplineFields = document.querySelectorAll('.matematica-secondaria-fields');
+                disciplineFields.forEach(field => {
+                    field.classList.add('active');
+                    field.style.display = 'table-cell';
+                });
+            } else if (disciplina === 'matematica') {
+                // Matematica Primaria: 3 ambiti
+                const disciplineFields = document.querySelectorAll('.matematica-primaria-fields');
+                disciplineFields.forEach(field => {
+                    field.classList.add('active');
+                    field.style.display = 'table-cell';
+                });
+            } else {
+                // Tutte le altre discipline
+                const disciplineFields = document.querySelectorAll(`.${disciplina}-fields`);
+                disciplineFields.forEach(field => {
+                    field.classList.add('active');
+                    field.style.display = 'table-cell';
+                });
+            }
+            
+            // Aggiorna anche le righe esistenti
+            updateExistingRows();
+        }
+        
+        function updateExistingRows() {
+            // Per ogni riga esistente, rimuovi e ricrea solo le celle disciplina
+            const allRows = document.querySelectorAll('#studentsTableBody tr');
+            allRows.forEach((row, index) => {
+                const studentId = row.id.split('-')[1];
+                
+                // Salva i valori esistenti prima di ricreare le celle
+                const existingValues = {};
+                const disciplineCells = row.querySelectorAll('.discipline-cell input');
+                disciplineCells.forEach(input => {
+                    if (input.id && input.value) {
+                        existingValues[input.id] = input.value;
+                    }
+                });
+                
+                // Rimuovi tutte le celle disciplina esistenti
+                const existingCells = row.querySelectorAll('.discipline-cell');
+                existingCells.forEach(cell => cell.remove());
+                
+                // Riaggiungile con la disciplina corrente
+                addDisciplineCellsToRow(row, studentId);
+                
+                // Ripristina i valori salvati dove possibile
+                Object.keys(existingValues).forEach(inputId => {
+                    const input = document.getElementById(inputId);
+                    if (input) {
+                        input.value = existingValues[inputId];
+                        // Ricalcola la media dopo aver ripristinato i valori
+                        calculateAverage(studentId);
+                    }
+                });
+            });
+        }
+        
+        function validateScore(input) {
+            const value = parseFloat(input.value);
+            
+            // Controlla se il valore è superiore a 100
+            if (value > 100) {
+                input.value = 100;
+                // Mantieni lo sfondo rosso per valori superiori a 100
+                input.classList.add('score-warning');
+            } else {
+                // Rimuovi lo sfondo rosso se il valore è valido
+                input.classList.remove('score-warning');
+            }
+            
+            // Controlla se il valore è negativo
+            if (value < 0) {
+                input.value = 0;
+                input.style.backgroundColor = '#ffe6e6';
+                setTimeout(() => {
+                    input.style.backgroundColor = 'white';
+                }, 1000);
+            }
+            
+            // Rimuovi eventuali decimali non necessari
+            if (!isNaN(value) && value % 1 === 0) {
+                input.value = Math.floor(value);
+            }
+        }
+        
+        function capitalizeInput(input) {
+            // Capitalizza la prima lettera di ogni parola
+            const words = input.value.split(' ');
+            const capitalizedWords = words.map(word => {
+                if (word.length > 0) {
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                }
+                return word;
+            });
+            input.value = capitalizedWords.join(' ');
+        }
+        
+        function addStudent() {
+            // Incrementa il contatore per aggiungere una nuova riga oltre le 35
+            studentCounter++;
+            createEmptyStudentRow(studentCounter);
+            
+            // IMPORTANTE: Aggiungi le celle disciplina per la nuova riga
+            const newRow = document.getElementById(`student-${studentCounter}`);
+            if (newRow) {
+                addDisciplineCellsToRow(newRow, studentCounter);
+            }
+            
+            // Aggiorna la visibilità per tutte le righe
+            updateDisciplineFields();
+        }
+        
+        function addDisciplineCellsToRow(row, studentId) {
+            const disciplina = document.getElementById('disciplina').value.toLowerCase();
+            const ordine = document.getElementById('ordine').value;
+            const isSecondaria = ordine === 'Secondaria I grado';
+            
+            // Se studentId non è fornito, estrailo dal row ID
+            if (!studentId) {
+                studentId = row.id.split('-')[1];
+            }
+            
+            // Rimuovi celle discipline esistenti
+            const existingCells = row.querySelectorAll('.discipline-cell');
+            existingCells.forEach(cell => cell.remove());
+            
+            // Trova dove inserire le celle (prima della cella media)
+            const mediaCell = row.querySelector('span[id^="media-"]')?.parentElement;
+            
+            if (!mediaCell) {
+                console.log('Media cell not found for row', studentId);
+                return;
+            }
+            
+            if (disciplina === 'inglese') {
+                // Solo 2 ambiti per Inglese
+                for (let i = 1; i <= 2; i++) {
+                    const cell = document.createElement('td');
+                    cell.className = 'discipline-cell input-cell inglese-fields';
+                    cell.innerHTML = `<input type="number" min="0" max="100" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
+                    row.insertBefore(cell, mediaCell);
+                }
+            } else if (disciplina === 'italiano') {
+                for (let i = 1; i <= 4; i++) {
+                    const cell = document.createElement('td');
+                    cell.className = 'discipline-cell input-cell italiano-fields';
+                    cell.innerHTML = `<input type="number" min="0" max="100" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
+                    row.insertBefore(cell, mediaCell);
+                }
+            } else if (disciplina === 'matematica' && isSecondaria) {
+                // Matematica Secondaria: 4 ambiti
+                for (let i = 1; i <= 4; i++) {
+                    const cell = document.createElement('td');
+                    cell.className = 'discipline-cell input-cell matematica-secondaria-fields';
+                    cell.innerHTML = `<input type="number" min="0" max="100" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
+                    row.insertBefore(cell, mediaCell);
+                }
+            } else if (disciplina === 'matematica') {
+                // Matematica Primaria: 3 ambiti
+                for (let i = 1; i <= 3; i++) {
+                    const cell = document.createElement('td');
+                    cell.className = 'discipline-cell input-cell matematica-primaria-fields';
+                    cell.innerHTML = `<input type="number" min="0" max="100" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
+                    row.insertBefore(cell, mediaCell);
+                }
+            } else if (disciplina === 'unica') {
+                for (let i = 1; i <= 2; i++) {
+                    const cell = document.createElement('td');
+                    cell.className = 'discipline-cell input-cell unica-fields';
+                    cell.innerHTML = `<input type="number" min="0" max="100" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
+                    row.insertBefore(cell, mediaCell);
+                }
+            }
+        }
+        
+        function calculateAverage(studentId) {
+            const disciplina = document.getElementById('disciplina').value.toLowerCase();
+            const ordine = document.getElementById('ordine').value;
+            const isSecondaria = ordine === 'Secondaria I grado';
+            let scores = [];
+            let maxAmbiti = 2;
+            
+            if (disciplina === 'inglese' || disciplina === 'unica') {
+                maxAmbiti = 2;
+            } else if (disciplina === 'italiano') {
+                maxAmbiti = 4;
+            } else if (disciplina === 'matematica' && isSecondaria) {
+                maxAmbiti = 4;
+            } else if (disciplina === 'matematica') {
+                maxAmbiti = 3;
+            }
+            
+            for (let i = 1; i <= maxAmbiti; i++) {
+                const input = document.getElementById(`ambito${i}-${studentId}`);
+                if (input && input.value !== '') {
+                    scores.push(parseFloat(input.value));
+                }
+            }
+            
+            const average = scores.length > 0 ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '-';
+            const mediaElement = document.getElementById(`media-${studentId}`);
+            if (mediaElement) {
+                mediaElement.textContent = average;
+            }
+        }
+        
+        function removeStudent(studentId) {
+            const row = document.getElementById(`student-${studentId}`);
+            if (row) {
+                // Conferma prima di rimuovere
+                if (confirm(`Sei sicuro di voler rimuovere l'alunno ${studentId}?`)) {
+                    row.remove();
+                }
+            }
+        }
+        
+        function clearAll() {
+            if (confirm('Sei sicuro di voler cancellare tutti i dati inseriti?')) {
+                // Pulisci tutti i campi delle prime 35 righe
+                for (let i = 1; i <= 35; i++) {
+                    const cognome = document.getElementById(`cognome-${i}`);
+                    const nome = document.getElementById(`nome-${i}`);
+                    const certificati = document.getElementById(`certificati-${i}`);
+                    const competenze = document.getElementById(`competenze-${i}`);
+                    const note = document.getElementById(`note-${i}`);
+                    const media = document.getElementById(`media-${i}`);
+                    
+                    if (cognome) cognome.value = '';
+                    if (nome) nome.value = '';
+                    if (certificati) certificati.value = '';
+                    if (competenze) competenze.value = '';
+                    if (note) note.value = '';
+                    if (media) media.textContent = '-';
+                    
+                    // Pulisci tutti i punteggi
+                    for (let j = 1; j <= 4; j++) {
+                        const ambito = document.getElementById(`ambito${j}-${i}`);
+                        if (ambito) {
+                            ambito.value = '';
+                            ambito.classList.remove('score-warning');
+                        }
+                    }
+                }
+                
+                // Rimuovi le righe rimosse dall'utente (se ci sono buchi nella numerazione)
+                const remainingRows = document.querySelectorAll('#studentsTableBody tr');
+                
+                // Reimposta il contatore al numero di righe effettive o minimo 35
+                studentCounter = Math.max(35, remainingRows.length);
+            }
+        }
+        
+        function exportToExcel() {
+            const data = collectData();
+            const workbook = createWorkbook(data);
+            
+            // Nome file basato sui dati inseriti
+            const anno = document.getElementById('anno').value.replace('/', '');
+            const ordine = document.getElementById('ordine').value.split(' ')[0];
+            const plesso = document.getElementById('plesso').value.replace('.', '').replace(' ', '');
+            const classe = document.getElementById('classe').value || 'X';
+            const sezione = document.getElementById('sezione').value || 'X';
+            const disciplina = document.getElementById('disciplina').value;
+            const prova = document.getElementById('prova').value;
+            
+            const fileName = `${ordine}_${plesso}_${anno}_${classe}${sezione}_${disciplina}_${prova}.xlsx`;
+            
+            // Scarica il file
+            XLSX.writeFile(workbook, fileName);
+        }
+        
+        function collectData() {
+            const data = [];
+            const disciplina = document.getElementById('disciplina').value;
+            const ordine = document.getElementById('ordine').value;
+            const plesso = document.getElementById('plesso').value;
+            
+            // Intestazione principale
+            const headerRow1 = [
+                'A.S.',
+                document.getElementById('anno').value,
+                'SCUOLA:',
+                `${ordine} "${plesso}"`,
+                'Tabulazione prove parallele IC Puddu',
+                '',
+                'PROVA:',
+                document.getElementById('prova').value,
+                'DISCIPLINA:',
+                disciplina
+            ];
+            
+            // Intestazione campi
+            let headerRow2 = [
+                'CLASSE:',
+                'SEZIONE:',
+                'COGNOME',
+                'NOME',
+                'CERTIFICATI',
+                'COMPETENZE LINGUISTICHE',
+                'AMBITO 1',
+                'AMBITO 2',
+                'AMBITO 3',
+                'AMBITO 4',
+                'MEDIA',
+                'NOTE'
+            ];
+            
+            // Intestazione ambiti specifici
+            let headerRow3 = ['', '', '', '', '', ''];
+            
+            if (disciplina === 'Inglese') {
+                headerRow3.push('Comprensione scritta (Reading)', 'Comprensione orale (Listening)', '', '', '', '');
+            } else if (disciplina === 'Italiano') {
+                headerRow3.push('Comprensione', 'Inferenze', 'Lessico', 'Grammatica', '', '');
+            } else if (disciplina === 'Matematica' && ordine === 'Secondaria I grado') {
+                headerRow3.push('Numeri', 'Spazio e Figure', 'Dati e Previsioni', 'Relazioni e Funzioni', '', '');
+            } else if (disciplina === 'Matematica') {
+                headerRow3.push('Numeri', 'Spazio e Figure', 'Relazioni, dati e previsioni', '', '', '');
+            } else if (disciplina === 'Unica') {
+                headerRow3.push('Comprensione', 'Classificazione e Orientamento', '', '', '', '');
+            }
+            
+            data.push(headerRow1);
+            data.push(headerRow2);
+            data.push(headerRow3);
+            
+            // Dati studenti (solo righe con dati effettivi)
+            const allRows = document.querySelectorAll('#studentsTableBody tr');
+            allRows.forEach((row, index) => {
+                const studentId = row.id.split('-')[1];
+                const cognome = document.getElementById(`cognome-${studentId}`)?.value || '';
+                const nome = document.getElementById(`nome-${studentId}`)?.value || '';
+                const certificati = document.getElementById(`certificati-${studentId}`)?.value || '';
+                const competenze = document.getElementById(`competenze-${studentId}`)?.value || '';
+                
+                // Aggiungi solo righe con almeno cognome o nome compilato
+                if (cognome.trim() !== '' || nome.trim() !== '') {
+                    let studentRow = [
+                        document.getElementById('classe').value,
+                        document.getElementById('sezione').value,
+                        cognome,
+                        nome,
+                        certificati,
+                        competenze
+                    ];
+                    
+                    // Aggiungi punteggi in base alla disciplina
+                    const ordine = document.getElementById('ordine').value;
+                    const isSecondaria = ordine === 'Secondaria I grado';
+                    
+                    if (disciplina === 'Italiano') {
+                        for (let j = 1; j <= 4; j++) {
+                            const score = document.getElementById(`ambito${j}-${studentId}`)?.value || '';
+                            studentRow.push(score);
+                        }
+                    } else if (disciplina === 'Matematica' && isSecondaria) {
+                        // Matematica Secondaria: 4 ambiti
+                        for (let j = 1; j <= 4; j++) {
+                            const score = document.getElementById(`ambito${j}-${studentId}`)?.value || '';
+                            studentRow.push(score);
+                        }
+                    } else if (disciplina === 'Inglese') {
+                        // Inglese: solo 2 ambiti
+                        for (let j = 1; j <= 2; j++) {
+                            const score = document.getElementById(`ambito${j}-${studentId}`)?.value || '';
+                            studentRow.push(score);
+                        }
+                        studentRow.push('', ''); // Celle vuote per ambiti 3 e 4
+                    } else if (disciplina === 'Unica') {
+                        for (let j = 1; j <= 2; j++) {
+                            const score = document.getElementById(`ambito${j}-${studentId}`)?.value || '';
+                            studentRow.push(score);
+                        }
+                        studentRow.push('', ''); // Celle vuote per ambiti 3 e 4
+                    } else {
+                        // Matematica Primaria: 3 ambiti
+                        for (let j = 1; j <= 3; j++) {
+                            const score = document.getElementById(`ambito${j}-${studentId}`)?.value || '';
+                            studentRow.push(score);
+                        }
+                        studentRow.push(''); // Cella vuota per ambito 4
+                    }
+                    
+                    // Media
+                    const media = document.getElementById(`media-${studentId}`)?.textContent || '-';
+                    studentRow.push(media);
+                    
+                    // Note
+                    const note = document.getElementById(`note-${studentId}`)?.value || '';
+                    studentRow.push(note);
+                    
+                    data.push(studentRow);
+                }
+            });
+            
+            return data;
+        }
+        
+        function createWorkbook(data) {
+            const workbook = XLSX.utils.book_new();
+            
+            // Crea il foglio Input
+            const inputWorksheet = XLSX.utils.aoa_to_sheet(data);
+            
+            // Imposta la larghezza delle colonne per Input
+            const colWidths = [
+                {wch: 13}, {wch: 13}, {wch: 24}, {wch: 24}, {wch: 14}, {wch: 14},
+                {wch: 17}, {wch: 16}, {wch: 16}, {wch: 14}, {wch: 14}, {wch: 20}
+            ];
+            inputWorksheet['!cols'] = colWidths;
+            
+            XLSX.utils.book_append_sheet(workbook, inputWorksheet, "Input");
+            
+            // Crea il foglio Tabelle
+            const tabelleData = createTabelleSheet();
+            const tabelleWorksheet = XLSX.utils.aoa_to_sheet(tabelleData);
+            XLSX.utils.book_append_sheet(workbook, tabelleWorksheet, "Tabelle");
+            
+            return workbook;
+        }
+        
+        function createTabelleSheet() {
+            const disciplina = document.getElementById('disciplina').value;
+            const ordine = document.getElementById('ordine').value;
+            const plesso = document.getElementById('plesso').value;
+            const anno = document.getElementById('anno').value;
+            const tipoProva = document.getElementById('prova').value;
+            const isSecondaria = ordine === 'Secondaria I grado';
+            
+            // Prima riga: intestazioni fisse (identiche al file Excel originale)
+            const headers = [
+                'ID', 'Classe', 'Sezione', 'Anno', 'Plesso', 'Disciplina', 'Tipo_prova',
+                'Cognome', 'Nome', 'BES', 'Livello_Linguistico',
+                'A1_Nome', 'A1_Punteggi', 'A2_Nome', 'A2_Punteggi',
+                'A3_Nome', 'A3_Punteggi', 'A4_Nome', 'A4_Punteggi',
+                'MEDIA'
+            ];
+            
+            const tabelleData = [headers];
+            
+            // Determina i nomi degli ambiti in base alla disciplina
+            let ambitiNomi = ['', '', '', ''];
+            if (disciplina === 'Inglese') {
+                ambitiNomi = ['Comprensione scritta (Reading)', 'Comprensione orale (Listening)', '', ''];
+            } else if (disciplina === 'Italiano') {
+                ambitiNomi = ['Comprensione', 'Inferenze', 'Lessico', 'Grammatica'];
+            } else if (disciplina === 'Matematica' && isSecondaria) {
+                ambitiNomi = ['Numeri', 'Spazio e Figure', 'Dati e Previsioni', 'Relazioni e Funzioni'];
+            } else if (disciplina === 'Matematica') {
+                ambitiNomi = ['Numeri', 'Spazio e Figure', 'Relazioni, dati e previsioni', ''];
+            } else if (disciplina === 'Unica') {
+                ambitiNomi = ['Comprensione', 'Classificazione e Orientamento', '', ''];
+            }
+            
+            // Costruisci il valore per la colonna Plesso
+            const plessoValue = `${ordine} "${plesso}"`;
+            
+            // Aggiungi i dati degli studenti
+            const allRows = document.querySelectorAll('#studentsTableBody tr');
+            let idCounter = 1;
+            
+            allRows.forEach((row, index) => {
+                const studentId = row.id.split('-')[1];
+                const cognome = document.getElementById(`cognome-${studentId}`)?.value || '';
+                const nome = document.getElementById(`nome-${studentId}`)?.value || '';
+                
+                // Aggiungi solo righe con almeno cognome o nome compilato
+                if (cognome.trim() !== '' || nome.trim() !== '') {
+                    const certificati = document.getElementById(`certificati-${studentId}`)?.value || '';
+                    const competenze = document.getElementById(`competenze-${studentId}`)?.value || '';
+                    const classe = document.getElementById('classe').value;
+                    const sezione = document.getElementById('sezione').value;
+                    
+                    // Raccogli i punteggi degli ambiti
+                    let ambiti = ['', '', '', ''];
+                    if (disciplina === 'Italiano') {
+                        for (let j = 1; j <= 4; j++) {
+                            ambiti[j-1] = document.getElementById(`ambito${j}-${studentId}`)?.value || '';
+                        }
+                    } else if (disciplina === 'Matematica' && isSecondaria) {
+                        for (let j = 1; j <= 4; j++) {
+                            ambiti[j-1] = document.getElementById(`ambito${j}-${studentId}`)?.value || '';
+                        }
+                    } else if (disciplina === 'Inglese') {
+                        for (let j = 1; j <= 2; j++) {
+                            ambiti[j-1] = document.getElementById(`ambito${j}-${studentId}`)?.value || '';
+                        }
+                    } else if (disciplina === 'Unica') {
+                        for (let j = 1; j <= 2; j++) {
+                            ambiti[j-1] = document.getElementById(`ambito${j}-${studentId}`)?.value || '';
+                        }
+                    } else if (disciplina === 'Matematica') {
+                        for (let j = 1; j <= 3; j++) {
+                            ambiti[j-1] = document.getElementById(`ambito${j}-${studentId}`)?.value || '';
+                        }
+                    }
+                    
+                    // Media
+                    const media = document.getElementById(`media-${studentId}`)?.textContent || '';
+                    
+                    // Costruisci la riga seguendo esattamente la struttura del file Excel
+                    const studentRow = [
+                        idCounter,                    // ID
+                        classe,                       // Classe
+                        sezione,                      // Sezione
+                        anno,                         // Anno
+                        plessoValue,                  // Plesso (Ordine "Plesso")
+                        disciplina,                   // Disciplina
+                        tipoProva,                    // Tipo_prova
+                        cognome,                      // Cognome
+                        nome,                         // Nome
+                        certificati,                  // BES
+                        competenze,                   // Livello_Linguistico
+                        ambitiNomi[0],               // A1_Nome
+                        ambiti[0],                   // A1_Punteggi
+                        ambitiNomi[1],               // A2_Nome
+                        ambiti[1],                   // A2_Punteggi
+                        ambitiNomi[2],               // A3_Nome
+                        ambiti[2],                   // A3_Punteggi
+                        ambitiNomi[3],               // A4_Nome
+                        ambiti[3],                   // A4_Punteggi
+                        media                        // MEDIA
+                    ];
+                    
+                    tabelleData.push(studentRow);
+                    idCounter++;
+                }
+            });
+            
+            return tabelleData;
+        }
+        
+        function sendEmail() {
+            // 1. Prima scarica automaticamente il file Excel
+            const fileName = generateFileName(); // Genera il nome del file
+            exportToExcel(); // Scarica il file
+            
+            // 2. Prepara i dati per l'email
+            const anno = document.getElementById('anno').value;
+            const ordine = document.getElementById('ordine').value;
+            const plesso = document.getElementById('plesso').value;
+            const scuola = `${ordine} "${plesso}"`;
+            const classe = document.getElementById('classe').value;
+            const sezione = document.getElementById('sezione').value;
+            const disciplina = document.getElementById('disciplina').value;
+            const prova = document.getElementById('prova').value;
+            
+            const subject = `Tabulazione prove parallele IC Puddu - ${disciplina} ${prova} - Classe ${classe}${sezione} - A.S. ${anno}`;
+            const body = `Gentile gruppo prove parallele,
+
+in allegato i dati della valutazione ${prova.toLowerCase()} di ${disciplina} per la classe ${classe}${sezione} dell'anno scolastico ${anno}.
+
+Scuola: ${scuola}
+Disciplina: ${disciplina}
+Tipo di prova: ${prova}
+
+📎 IMPORTANTE: Il file Excel è stato scaricato automaticamente nella cartella Downloads del tuo computer.
+📁 Nome file: ${fileName}
+🔗 Ricordati di allegarlo a questa email prima di inviarla.
+
+Cordiali saluti`;
+            
+            // 3. Aspetta un momento per permettere il download, poi apri Gmail
+            setTimeout(() => {
+                // Prova prima Gmail direttamente
+                const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=prove.didattica@pudduprato.edu.it&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                
+                // Apri Gmail in una nuova finestra/tab
+                const gmailWindow = window.open(gmailUrl, '_blank');
+                
+                // Se Gmail non si apre (popup bloccato), usa il fallback mailto
+                if (!gmailWindow) {
+                    alert('Popup bloccato! Apertura tramite client email locale...\n\nATTENZIONE: Il file Excel è stato scaricato. Ricordati di allegarlo all\'email!');
+                    const mailtoLink = `mailto:prove.didattica@pudduprato.edu.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                    window.open(mailtoLink);
+                }
+            }, 1500); // Aspetta 1.5 secondi per il download
+        }
+        
+        function generateFileName() {
+            // Genera il nome file (stesso metodo di exportToExcel)
+            const anno = document.getElementById('anno').value.replace('/', '');
+            const ordine = document.getElementById('ordine').value.split(' ')[0];
+            const plesso = document.getElementById('plesso').value.replace('.', '').replace(' ', '');
+            const classe = document.getElementById('classe').value || 'X';
+            const sezione = document.getElementById('sezione').value || 'X';
+            const disciplina = document.getElementById('disciplina').value;
+            const prova = document.getElementById('prova').value;
+            
+            return `${ordine}_${plesso}_${anno}_${classe}${sezione}_${disciplina}_${prova}.xlsx`;
+        }
+    </script>
+</body>
+</html>
