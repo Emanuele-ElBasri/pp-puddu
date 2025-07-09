@@ -1093,21 +1093,15 @@ Cordiali saluti`;
             
             // 3. Aspetta un momento per permettere il download, poi apri Gmail
             setTimeout(() => {
-            // URL Gmail più semplice senza parametri complessi
-            const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=prove.didattica@pudduprato.edu.it`;
+                const choice = confirm('Come vuoi inviare l\'email?\n\nOK = Gmail nel browser\nAnnulla = Client email locale');
     
-                try {
-                    const gmailWindow = window.open(gmailUrl, '_blank');
-        
-                    if (!gmailWindow) {
-                        // Fallback a mailto
-                        window.location.href = `mailto:prove.didattica@pudduprato.edu.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                    }
-                } catch (error) {
-                    console.error('Errore apertura Gmail:', error);
-                    // Fallback diretto a mailto
+                if (choice) {
+                    // Apri Gmail senza parametri nel subject/body per evitare redirect
+                    window.open('https://mail.google.com/mail/?view=cm&fs=1', '_blank');
+                    alert('Gmail aperto! Inserisci manualmente:\n\nA: prove.didattica@pudduprato.edu.it\nOggetto: ' + subject);
+                } else {
                     window.location.href = `mailto:prove.didattica@pudduprato.edu.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                    }
+                }
             }, 1500);
         
         function generateFileName() {
