@@ -1093,21 +1093,20 @@ Cordiali saluti`;
             
             // 3. Aspetta un momento per permettere il download, poi apri Gmail
             setTimeout(() => {
-    // Prova prima con mailto (più affidabile)
-    const mailtoLink = `mailto:prove.didattica@pudduprato.edu.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
-    // Crea un link temporaneo e cliccalo
-    const tempLink = document.createElement('a');
-    tempLink.href = mailtoLink;
-    tempLink.click();
-    
-    // Offri opzione Gmail come alternativa
-    setTimeout(() => {
-        if (confirm('Vuoi aprire Gmail nel browser invece del client email locale?')) {
-            window.open('https://mail.google.com/mail/?view=cm&fs=1&to=prove.didattica@pudduprato.edu.it', '_blank');
+                // Prova prima Gmail direttamente
+                const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=prove.didattica@pudduprato.edu.it&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                
+                // Apri Gmail in una nuova finestra/tab
+                const gmailWindow = window.open(gmailUrl, '_blank');
+                
+                // Se Gmail non si apre (popup bloccato), usa il fallback mailto
+                if (!gmailWindow) {
+                    alert('Popup bloccato! Apertura tramite client email locale...\n\nATTENZIONE: Il file Excel è stato scaricato. Ricordati di allegarlo all\'email!');
+                    const mailtoLink = `mailto:prove.didattica@pudduprato.edu.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                    window.open(mailtoLink);
+                }
+            }, 1500); // Aspetta 1.5 secondi per il download
         }
-    }, 500);
-}, 1500);
         
         function generateFileName() {
             // Genera il nome file (stesso metodo di exportToExcel)
