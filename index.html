@@ -368,8 +368,6 @@
             </div>
         </div>
         
-        <button class="add-student-btn" onclick="addStudent()">+ Aggiungi Alunno</button>
-        
         <div class="instructions-box">
             ⚠️ INSERIRE I PUNTEGGI SU BASE 100
         </div>
@@ -419,9 +417,13 @@
             </table>
         </div>
         
+        <div style="text-align: right">
+            <button class="add-student-btn" float=right onclick="addStudent()">+ Aggiungi Alunno</button>
+        </div>
+        
         <div class="actions">
             <button class="btn btn-primary" onclick="exportToExcel()">💾 Scarica File Excel</button>
-            <button class="btn btn-success" onclick="sendEmail()">📧 Invia via Email</button>
+            <button class="btn btn-success" onclick="sendEmail()">📧 Invia per Email</button>
             <button class="btn btn-warning" onclick="clearAll()">🗑️ Svuota Tutto</button>
         </div>
         
@@ -436,10 +438,10 @@
         // Inizializza la disciplina di default e crea 35 righe precompilate
         document.addEventListener('DOMContentLoaded', function() {
             // Crea subito 35 righe vuote
-            for (let i = 1; i <= 35; i++) {
+            for (let i = 1; i <= 30; i++) {
                 createEmptyStudentRow(i);
             }
-            studentCounter = 35; // Imposta il contatore a 35
+            studentCounter = 30; // Imposta il contatore a 30
             
             // Aggiorna i campi disciplina per tutte le righe create
             setTimeout(() => {
@@ -625,7 +627,7 @@
         }
         
         function addStudent() {
-            // Incrementa il contatore per aggiungere una nuova riga oltre le 35
+            // Incrementa il contatore per aggiungere una nuova riga oltre le 30
             studentCounter++;
             createEmptyStudentRow(studentCounter);
             
@@ -745,8 +747,8 @@
         
         function clearAll() {
             if (confirm('Sei sicuro di voler cancellare tutti i dati inseriti?')) {
-                // Pulisci tutti i campi delle prime 35 righe
-                for (let i = 1; i <= 35; i++) {
+                // Pulisci tutti i campi delle prime 30 righe
+                for (let i = 1; i <= 30; i++) {
                     const cognome = document.getElementById(`cognome-${i}`);
                     const nome = document.getElementById(`nome-${i}`);
                     const certificati = document.getElementById(`certificati-${i}`);
@@ -774,8 +776,8 @@
                 // Rimuovi le righe rimosse dall'utente (se ci sono buchi nella numerazione)
                 const remainingRows = document.querySelectorAll('#studentsTableBody tr');
                 
-                // Reimposta il contatore al numero di righe effettive o minimo 35
-                studentCounter = Math.max(35, remainingRows.length);
+                // Reimposta il contatore al numero di righe effettive o minimo 30
+                studentCounter = Math.max(30, remainingRows.length);
             }
         }
         
