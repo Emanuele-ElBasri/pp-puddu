@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabulazione prove parallele IC Puddu</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -99,22 +100,22 @@
         
         /* Colori specifici per discipline */
         .header-italiano {
-            background-color: #1c4587 !important; /* Blu */
+            background-color: #1c4587 !important;
             color: white !important;
         }
         
         .header-matematica {
-            background-color: #9c1810 !important; /* Rosso scuro */
+            background-color: #9c1810 !important;
             color: white !important;
         }
         
         .header-inglese {
-            background-color: #8e44ad !important; /* Viola */
+            background-color: #8e44ad !important;
             color: white !important;
         }
         
         .header-unica {
-            background-color: #e9531a !important; /* Arancione */
+            background-color: #e9531a !important;
             color: white !important;
         }
         
@@ -213,7 +214,7 @@
         }
         
         .email-info {
-            background-color: #e8f4fd;
+            background-color: #ebfde8;
             padding: 15px;
             border-radius: 5px;
             margin-top: 20px;
@@ -257,6 +258,105 @@
         .remove-student:hover {
             background-color: #c82333;
         }
+    /* Stili per il sistema di autenticazione */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .auth-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .auth-container h2 {
+            color: #1a49e9;
+            margin-bottom: 30px;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .auth-btn {
+            background: #1a49e9;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            min-width: 120px;
+        }
+
+        .auth-btn:hover {
+            background: #1435b8;
+        }
+
+        .auth-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .auth-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .auth-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .auth-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .user-info {
+            background: #e8f4fd;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3c78d8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
         
         @media (max-width: 768px) {
             .form-header {
@@ -271,11 +371,146 @@
                 width: 100%;
             }
         }
+        /* Stili per la sezione grafici */
+        .charts-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .charts-header {
+            text-align: center;
+            color: #1a49e9;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .chart-controls {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group h4 {
+            color: #3c78d8;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: #e8f4fd;
+            border-color: #3c78d8;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin: 0;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-wrapper {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            min-height: 450px;
+        }
+
+        .chart-title {
+            color: #3c78d8;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .chart-canvas {
+            max-width: 100%;
+            height: 450px !important;
+        }
+
+        .chart-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-chart {
+            background: #3c78d8;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-chart:hover {
+            background: #2a5cb8;
+        }
+
+        .btn-chart-secondary {
+            background: #3c78d8;
+            color: white;
+        }
+
+        .btn-chart-secondary:hover {
+            background: #2a5cb8;
+        }
+
+        .stats-summary {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stats-summary h4 {
+            color: #3c78d8;
+            margin: 0 0 10px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Tabulazione prove parallele IC Puddu</h1>
+
+        <!-- Barra informazioni utente -->
+        <div id="userInfo" class="user-info" style="display: none;">
+            <span>👤 Connesso come: <strong id="userEmail"></strong></span>
+            <button onclick="logout()" class="logout-btn">Esci</button>
+        </div>
         
         <div class="form-header">
             <div class="form-group">
@@ -315,9 +550,9 @@
             </div>
             
             <div class="form-group">
-                <label for="classe">Classe:</label>
+                <label for="classe">Classe/Anno:</label>
                 <select id="classe">
-                    <option value="">Seleziona classe</option>
+                    <option value="">Seleziona classe o anno</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -382,7 +617,6 @@
         <div class="instructions-box">
             ⚠️ INSERIRE I PUNTEGGI SU BASE 100
         </div>
-        
         <div class="table-container">
             <table id="studentsTable">
                 <thead>
@@ -418,7 +652,7 @@
                         <th class="discipline-fields unica-fields header-unica">AMBITO 2<br>Classificazione e Orientamento</th>
                         
                         <th class="header-blue">MEDIA</th>
-                        <th style="background-color: #28a745; color: white;">NOTE</th>
+                        <th style="background-color: #6e706e; color: white;">NOTE</th>
                         <th style="background-color: #6e706e; color: white;">AZIONI</th>
                     </tr>
                 </thead>
@@ -429,12 +663,12 @@
         </div>
         
         <div style="text-align: right">
-            <button class="add-student-btn" float=right onclick="addStudent()">+ Aggiungi Alunno</button>
+            <button class="add-student-btn" onclick="addStudent()">+ Aggiungi Alunno</button>
         </div>
         
         <div class="actions">
-            <button class="btn btn-primary" onclick="exportToExcel()">💾 Scarica File Excel</button>
-            <button class="btn btn-success" onclick="sendEmail()">📧 Invia per Email</button>
+            <button class="btn btn-primary" onclick="transmitData()">📤 Trasmetti dati</button>
+<button class="btn btn-success" onclick="saveExcel()">💾 Salva Excel</button>
             <button class="btn btn-warning" onclick="clearAll()">🧹 Svuota Tutto</button>
         </div>
         
@@ -445,26 +679,244 @@
         <div class="dashboard-info">
             <strong>📊 Guarda la dashboard d'Istituto</strong> <a href="https://datastudio.google.com/reporting/9f30bd14-3474-4020-acaf-831f73381a76" target="_blank">link alla dashboard</a>
         </div>
+        <!-- Sezione Grafici -->
+        <div class="charts-section" id="chartsSection">
+            <h2 class="charts-header">🔍 Analisi Grafici dei Risultati</h2>
+            
+            <div class="stats-summary" id="statsSummary">
+                <h4>Riepilogo Dati</h4>
+                <p>Alunni analizzati: <span id="totalStudents">0</span> | Media complessiva: <span id="overallAverage">-</span></p>
+            </div>
+            
+            <div class="chart-controls">
+                <div class="filter-group">
+                    <h4>🔎Filtro per Certificazione</h4>
+                    <div class="checkbox-group" id="certificatiFilters">
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="no" checked>
+                            <span>Nessuna certificazione</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="L. 170 (D.S.A.)" checked>
+                            <span>L. 170 (D.S.A.)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="L. 104 (H)" checked>
+                            <span>L. 104 (H)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="B.E.S." checked>
+                            <span>B.E.S.</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h4>🔎Filtro per Competenza Linguistica</h4>
+                    <div class="checkbox-group" id="competenzeFilters">
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="Italofono" checked>
+                            <span>Italofono</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="Livello A" checked>
+                            <span>Livello A</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="Livello B" checked>
+                            <span>Livello B</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="Livello Iniziale" checked>
+                            <span>Livello Iniziale</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="charts-container" id="chartsContainer">
+                <!-- I grafici verranno generati dinamicamente qui -->
+            </div>
+            
+            <div class="chart-actions">
+                <button class="btn-chart btn-chart-secondary" onclick="saveAllCharts()">🖼️ Salva Grafici come immagine</button>
+                <button class="btn-chart" onclick="exportChartsReport()">💾 Esporta Report Completo</button>
+            </div>
+        </div>
     </div>
+    <!-- Overlay di autenticazione -->
+    <div id="authOverlay" class="auth-overlay">
+        <div class="auth-container">
+            <h2>🔐 Accesso Docenti IC Puddu</h2>
+            <p>Inserisci la tua email @pudduprato.edu.it per accedere alla piattaforma</p>
+            
+            <div id="loginStep">
+                <input type="email" id="emailInput" class="auth-input" placeholder="nome.cognome@pudduprato.edu.it" />
+                <button onclick="requestVerificationCode()" class="auth-btn" id="loginBtn">Invia Codice</button>
+            </div>
+            
+            <div id="verifyStep" style="display: none;">
+                <p>Controlla la tua email e inserisci il codice ricevuto:</p>
+                <input type="text" id="codeInput" class="auth-input" placeholder="Codice a 6 cifre" maxlength="6" />
+                <button onclick="verifyCode()" class="auth-btn" id="verifyBtn">Verifica</button>
+                <button onclick="backToLogin()" class="auth-btn" style="background: #6c757d;">Indietro</button>
+            </div>
+            
+            <div id="authMessage"></div>
+        </div>
     </div>
 
     <script>
         let studentCounter = 0;
         
-        // Inizializza la disciplina di default e crea 35 righe precompilate
+        // Configurazione per il sistema di autenticazione
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8rheknwj2UQ7hTNUQh4diOau0hMGQCtHv959EnXyKunyK8bW0DhZgne0R0dWatH4LTw/exec'; // Sostituisci con il tuo URL
+        let currentSession = null;
+        
         document.addEventListener('DOMContentLoaded', function() {
-            // Crea subito 35 righe vuote
+            // Controlla se c'è una sessione salvata
+            const savedSession = localStorage.getItem('icPudduSession');
+            if (savedSession) {
+                try {
+                    const session = JSON.parse(savedSession);
+                    if (session.expires > Date.now()) {
+                        currentSession = session;
+                        showMainApp();
+                        return;
+                    } else {
+                        localStorage.removeItem('icPudduSession');
+                    }
+                } catch (e) {
+                    localStorage.removeItem('icPudduSession');
+                }
+            }
+            
+            // Mostra schermata di login
+            showLogin();
+        });
+
+        function showLogin() {
+            document.getElementById('authOverlay').style.display = 'flex';
+            document.querySelector('.container').style.filter = 'blur(3px)';
+        }
+
+        function showMainApp() {
+            document.getElementById('authOverlay').style.display = 'none';
+            document.querySelector('.container').style.filter = 'none';
+            
+            if (currentSession) {
+                document.getElementById('userInfo').style.display = 'flex';
+                document.getElementById('userEmail').textContent = currentSession.email;
+            }
+            
+            // Crea le righe degli studenti
             for (let i = 1; i <= 30; i++) {
                 createEmptyStudentRow(i);
             }
-            studentCounter = 30; // Imposta il contatore a 30
+            studentCounter = 30;
             
-            // Aggiorna i campi disciplina per tutte le righe create
             setTimeout(() => {
                 updateDisciplineFields();
-            }, 100); // Piccolo delay per assicurarsi che tutte le righe siano create
-        });
-        
+                // Mostra i grafici automaticamente se ci sono dati
+                if (checkForData()) {
+                    updateCharts();
+                }
+            }, 200);
+        }
+        async function requestVerificationCode() {
+            const email = document.getElementById('emailInput').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+            
+            if (!email || !email.endsWith('@pudduprato.edu.it')) {
+                showAuthMessage('Usa la tua email @pudduprato.edu.it', 'error');
+                return;
+            }
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Invio in corso...';
+            
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=login&email=${encodeURIComponent(email)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAuthMessage('Codice inviato! Controlla la tua email: ' + email, 'success');
+                    document.getElementById('loginStep').style.display = 'none';
+                    document.getElementById('verifyStep').style.display = 'block';
+                } else {
+                    showAuthMessage(result.message || 'Errore sconosciuto', 'error');
+                }
+            } catch (error) {
+                showAuthMessage('Errore di connessione: ' + error.message, 'error');
+            }
+            
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Invia Codice';
+        }
+
+        // Modifica la funzione verifyCode nell'HTML per salvare correttamente il token
+
+        async function verifyCode() {
+            const email = document.getElementById('emailInput').value.trim();
+            const code = document.getElementById('codeInput').value.trim();
+            const verifyBtn = document.getElementById('verifyBtn');
+            
+            if (!code || code.length !== 6) {
+                showAuthMessage('Inserisci il codice a 6 cifre', 'error');
+                return;
+            }
+            
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = 'Verifica...';
+            
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=verify&email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Salva ESATTAMENTE come viene ricevuto dal server
+                    currentSession = result.data;
+                    
+                    // Salva in localStorage
+                    try {
+                        localStorage.setItem('icPudduSession', JSON.stringify(currentSession));
+                    } catch (e) {
+                        console.error('Errore salvando in localStorage:', e);
+                    }
+                    
+                    showAuthMessage('Accesso autorizzato!', 'success');
+                    setTimeout(() => {
+                        showMainApp();
+                    }, 1000);
+                } else {
+                    showAuthMessage(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Errore nella verifica:', error);
+                showAuthMessage('Errore di connessione. Riprova.', 'error');
+            }
+            
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = 'Verifica';
+        }
+
+        function backToLogin() {
+            document.getElementById('loginStep').style.display = 'block';
+            document.getElementById('verifyStep').style.display = 'none';
+            document.getElementById('codeInput').value = '';
+            document.getElementById('authMessage').innerHTML = '';
+        }
+
+        function showAuthMessage(message, type) {
+            const messageDiv = document.getElementById('authMessage');
+            messageDiv.innerHTML = `<div class="auth-message auth-${type}">${message}</div>`;
+        }
+
+        function logout() {
+            localStorage.removeItem('icPudduSession');
+            currentSession = null;
+            location.reload();
+        }
         function createEmptyStudentRow(rowNumber) {
             const tbody = document.getElementById('studentsTableBody');
             const row = document.createElement('tr');
@@ -475,7 +927,7 @@
                 <td class="input-cell"><input type="text" placeholder="Cognome" class="form-control" id="cognome-${rowNumber}" oninput="capitalizeInput(this)"></td>
                 <td class="input-cell"><input type="text" placeholder="Nome" class="form-control" id="nome-${rowNumber}" oninput="capitalizeInput(this)"></td>
                 <td class="input-cell">
-                    <select class="form-control" id="certificati-${rowNumber}">
+                    <select class="form-control" id="certificati-${rowNumber}" onchange="setTimeout(() => { if (checkForData()) updateCharts(); }, 100)">
                         <option value="">-</option>
                         <option value="no">no</option>
                         <option value="L. 170 (D.S.A.)">L. 170 (D.S.A.)</option>
@@ -484,7 +936,7 @@
                     </select>
                 </td>
                 <td class="input-cell">
-                    <select class="form-control" id="competenze-${rowNumber}">
+                    <select class="form-control" id="competenze-${rowNumber}" onchange="setTimeout(() => { if (checkForData()) updateCharts(); }, 100)">
                         <option value="">-</option>
                         <option value="Italofono">Italofono</option>
                         <option value="Livello A">Livello A</option>
@@ -512,7 +964,6 @@
             actionCell.style.textAlign = 'center';
             actionCell.style.padding = '5px';
             
-            // Tutti gli alunni hanno il pulsante rimuovi + numero riga
             actionCell.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
                     <button class="remove-student" onclick="removeStudent(${rowNumber})" style="font-size: 10px; padding: 2px 6px;">Rimuovi</button>
@@ -566,8 +1017,13 @@
             
             // Aggiorna anche le righe esistenti
             updateExistingRows();
+            // Auto-aggiorna i grafici quando cambia la disciplina
+            setTimeout(() => {
+                if (checkForData()) {
+                    updateCharts();
+                }
+            }, 200);
         }
-        
         function updateExistingRows() {
             // Per ogni riga esistente, rimuovi e ricrea solo le celle disciplina
             const allRows = document.querySelectorAll('#studentsTableBody tr');
@@ -603,30 +1059,75 @@
         }
         
         function validateScore(input) {
-            const value = parseFloat(input.value);
+            // Rimuovi spazi e caratteri non validi, mantieni solo numeri, virgole e punti
+            let cleanValue = input.value.replace(/[^\d,.-]/g, '');
+            
+            // Sostituisci virgola con punto per il parsing interno
+            let normalizedValue = cleanValue.replace(',', '.');
+            
+            // Previeni input multipli di punti/virgole
+            const pointCount = (normalizedValue.match(/\./g) || []).length;
+            if (pointCount > 1) {
+                // Mantieni solo il primo punto/virgola
+                const parts = normalizedValue.split('.');
+                normalizedValue = parts[0] + '.' + parts.slice(1).join('');
+                // Aggiorna cleanValue per mantenere coerenza
+                if (cleanValue.includes(',')) {
+                    cleanValue = parts[0] + ',' + parts.slice(1).join('');
+                } else {
+                    cleanValue = normalizedValue;
+                }
+            }
+            
+            // Se l'input è vuoto o solo un segno meno, permettilo
+            if (cleanValue === '' || cleanValue === '-') {
+                input.value = cleanValue;
+                input.classList.remove('score-warning');
+                return;
+            }
+            
+            // Permetti input parziali come "87," o "87."
+            if (cleanValue.endsWith(',') || cleanValue.endsWith('.')) {
+                input.value = cleanValue;
+                input.classList.remove('score-warning');
+                return;
+            }
+            
+            const value = parseFloat(normalizedValue);
+            
+            // Se il valore non è un numero valido dopo aver escluso i casi speciali sopra
+            if (isNaN(value)) {
+                input.value = '';
+                return;
+            }
             
             // Controlla se il valore è superiore a 100
             if (value > 100) {
-                input.value = 100;
-                // Mantieni lo sfondo rosso per valori superiori a 100
+                input.value = '100';
                 input.classList.add('score-warning');
-            } else {
-                // Rimuovi lo sfondo rosso se il valore è valido
-                input.classList.remove('score-warning');
-            }
-            
-            // Controlla se il valore è negativo
-            if (value < 0) {
-                input.value = 0;
+            } else if (value < 0) {
+                // Controlla se il valore è negativo
+                input.value = '0';
                 input.style.backgroundColor = '#ffe6e6';
                 setTimeout(() => {
                     input.style.backgroundColor = 'white';
                 }, 1000);
-            }
-            
-            // Rimuovi eventuali decimali non necessari
-            if (!isNaN(value) && value % 1 === 0) {
-                input.value = Math.floor(value);
+            } else {
+                // Valore valido: mantieni il formato originale dell'utente
+                if (value % 1 === 0) {
+                    // Se è un numero intero, mostra senza decimali
+                    input.value = Math.floor(value).toString();
+                } else {
+                    // Per i decimali, mantieni il separatore che l'utente ha digitato
+                    if (cleanValue.includes(',') && !cleanValue.includes('.')) {
+                        // L'utente ha usato la virgola
+                        input.value = value.toString().replace('.', ',');
+                    } else {
+                        // L'utente ha usato il punto
+                        input.value = value.toString();
+                    }
+                }
+                input.classList.remove('score-warning');
             }
         }
         
@@ -656,7 +1157,6 @@
             // Aggiorna la visibilità per tutte le righe
             updateDisciplineFields();
         }
-        
         function addDisciplineCellsToRow(row, studentId) {
             const disciplina = document.getElementById('disciplina').value.toLowerCase();
             const ordine = document.getElementById('ordine').value;
@@ -674,24 +1174,19 @@
             // Trova dove inserire le celle (prima della cella media)
             const mediaCell = row.querySelector('span[id^="media-"]')?.parentElement;
             
-            if (!mediaCell) {
-                console.log('Media cell not found for row', studentId);
-                return;
-            }
-            
             if (disciplina === 'inglese') {
                 // Solo 2 ambiti per Inglese
                 for (let i = 1; i <= 2; i++) {
                     const cell = document.createElement('td');
                     cell.className = 'discipline-cell input-cell inglese-fields';
-                    cell.innerHTML = `<input type="number" min="0" max="100" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
+                    cell.innerHTML = `<input type="text" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
                     row.insertBefore(cell, mediaCell);
                 }
             } else if (disciplina === 'italiano') {
                 for (let i = 1; i <= 4; i++) {
                     const cell = document.createElement('td');
                     cell.className = 'discipline-cell input-cell italiano-fields';
-                    cell.innerHTML = `<input type="number" min="0" max="100" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
+                    cell.innerHTML = `<input type="text" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
                     row.insertBefore(cell, mediaCell);
                 }
             } else if (disciplina === 'matematica' && isSecondaria) {
@@ -699,7 +1194,7 @@
                 for (let i = 1; i <= 4; i++) {
                     const cell = document.createElement('td');
                     cell.className = 'discipline-cell input-cell matematica-secondaria-fields';
-                    cell.innerHTML = `<input type="number" min="0" max="100" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
+                    cell.innerHTML = `<input type="text" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
                     row.insertBefore(cell, mediaCell);
                 }
             } else if (disciplina === 'matematica') {
@@ -707,14 +1202,14 @@
                 for (let i = 1; i <= 3; i++) {
                     const cell = document.createElement('td');
                     cell.className = 'discipline-cell input-cell matematica-primaria-fields';
-                    cell.innerHTML = `<input type="number" min="0" max="100" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
+                    cell.innerHTML = `<input type="text" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
                     row.insertBefore(cell, mediaCell);
                 }
             } else if (disciplina === 'unica') {
                 for (let i = 1; i <= 2; i++) {
                     const cell = document.createElement('td');
                     cell.className = 'discipline-cell input-cell unica-fields';
-                    cell.innerHTML = `<input type="number" min="0" max="100" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
+                    cell.innerHTML = `<input type="text" placeholder="0-100" class="score-input" id="ambito${i}-${studentId}" oninput="validateScore(this); calculateAverage(${studentId})" style="width: 100%; border: none; padding: 5px; text-align: center;">`;
                     row.insertBefore(cell, mediaCell);
                 }
             }
@@ -740,7 +1235,12 @@
             for (let i = 1; i <= maxAmbiti; i++) {
                 const input = document.getElementById(`ambito${i}-${studentId}`);
                 if (input && input.value !== '') {
-                    scores.push(parseFloat(input.value));
+                    // Normalizza il valore sostituendo virgola con punto prima del parsing
+                    const normalizedValue = input.value.replace(',', '.');
+                    const score = parseFloat(normalizedValue);
+                    if (!isNaN(score)) {
+                        scores.push(score);
+                    }
                 }
             }
             
@@ -749,6 +1249,13 @@
             if (mediaElement) {
                 mediaElement.textContent = average;
             }
+
+            // Auto-aggiorna i grafici quando cambia una media
+            setTimeout(() => {
+                if (checkForData()) {
+                    updateCharts();
+                }
+            }, 100);
         }
         
         function removeStudent(studentId) {
@@ -789,14 +1296,10 @@
                     }
                 }
                 
-                // Rimuovi le righe rimosse dall'utente (se ci sono buchi nella numerazione)
-                const remainingRows = document.querySelectorAll('#studentsTableBody tr');
-                
                 // Reimposta il contatore al numero di righe effettive o minimo 30
-                studentCounter = Math.max(30, remainingRows.length);
+                studentCounter = Math.max(30, document.querySelectorAll('#studentsTableBody tr').length);
             }
         }
-        
         function exportToExcel() {
             const data = collectData();
             const workbook = createWorkbook(data);
@@ -848,8 +1351,7 @@
                 'AMBITO 2',
                 'AMBITO 3',
                 'AMBITO 4',
-                'MEDIA',
-                'NOTE'
+                'MEDIA'
             ];
             
             // Intestazione ambiti specifici
@@ -942,7 +1444,6 @@
             
             return data;
         }
-        
         function createWorkbook(data) {
             const workbook = XLSX.utils.book_new();
             
@@ -974,7 +1475,7 @@
             const tipoProva = document.getElementById('prova').value;
             const isSecondaria = ordine === 'Secondaria I grado';
             
-            // Prima riga: intestazioni fisse (identiche al file Excel originale)
+            // Prima riga: intestazioni fisse
             const headers = [
                 'ID', 'Classe', 'Sezione', 'Anno', 'Plesso', 'Disciplina', 'Tipo_prova',
                 'Cognome', 'Nome', 'BES', 'Livello_Linguistico',
@@ -1045,13 +1546,13 @@
                     // Media
                     const media = document.getElementById(`media-${studentId}`)?.textContent || '';
                     
-                    // Costruisci la riga seguendo esattamente la struttura del file Excel
+                    // Costruisci la riga
                     const studentRow = [
                         idCounter,                    // ID
                         classe,                       // Classe
                         sezione,                      // Sezione
                         anno,                         // Anno
-                        plessoValue,                  // Plesso (Ordine "Plesso")
+                        plessoValue,                  // Plesso
                         disciplina,                   // Disciplina
                         tipoProva,                    // Tipo_prova
                         cognome,                      // Cognome
@@ -1076,47 +1577,149 @@
             
             return tabelleData;
         }
+
+        async function transmitData() {
+            if (!currentSession) {
+                alert('Sessione scaduta. Effettua di nuovo il login.');
+                logout();
+                return;
+            }
+            
+            const hasData = checkForData();
+            if (!hasData) {
+                alert('Non ci sono dati da trasmettere. Compila almeno un alunno.');
+                return;
+            }
+            
+            const saveBtn = event.target;
+            const originalText = saveBtn.textContent;
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Trasmissione...';
+            
+            try {
+                const tabulationData = generateTabulationData();
+                
+                const payload = {
+                    action: 'saveData',
+                    token: currentSession.token,
+                    data: tabulationData
+                };
+                
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const responseText = await response.text();
+                
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    result = { success: false, message: 'Errore nella risposta del server' };
+                }
+                
+                if (result.success) {
+                    alert('✅ Dati trasmessi con successo nel sistema centralizzato!');
+                } else {
+                    throw new Error(result.message);
+                }
+                
+            } catch (error) {
+                alert('❌ Errore nella trasmissione: ' + error.message);
+            }
+            
+            saveBtn.disabled = false;
+            saveBtn.textContent = originalText;
+        }
+
+        function saveExcel() {
+            const hasData = checkForData();
+            if (!hasData) {
+                alert('Non ci sono dati da salvare. Compila almeno un alunno.');
+                return;
+            }
+            
+            exportToExcel();
+            alert('📁 File Excel salvato con successo!');
+        }        
         
-        function sendEmail() {
-            // 1. Prima scarica automaticamente il file Excel
-            const fileName = generateFileName(); // Genera il nome del file
-            exportToExcel(); // Scarica il file
-            
-            // 2. Prepara i dati per l'email
-            const anno = document.getElementById('anno').value;
-            const ordine = document.getElementById('ordine').value;
-            const plesso = document.getElementById('plesso').value;
-            const scuola = `${ordine} "${plesso}"`;
-            const classe = document.getElementById('classe').value;
-            const sezione = document.getElementById('sezione').value;
-            const disciplina = document.getElementById('disciplina').value;
-            const prova = document.getElementById('prova').value;
-            
-            const subject = `Tabulazione prove parallele IC Puddu - ${disciplina} ${prova} - Classe ${classe}${sezione} - A.S. ${anno}`;
-            const body = `Gentile gruppo prove parallele,
-
-in allegato i dati della valutazione ${prova.toLowerCase()} di ${disciplina} per la classe ${classe}${sezione} dell'anno scolastico ${anno}.
-
-Scuola: ${scuola}
-Disciplina: ${disciplina}
-Tipo di prova: ${prova}
-
-📎 IMPORTANTE: Il file Excel è stato scaricato automaticamente nella cartella Downloads del tuo computer.
-📁 Nome file: ${fileName}
-🔗 Ricordati di allegarlo a questa email prima di inviarla.
-
-Cordiali saluti`;
-            
-            // 3. Aspetta un momento per permettere il download, poi apri il client email
-            setTimeout(() => {
-                const mailtoLink = `mailto:prove.didattica@pudduprato.edu.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        function checkForData() {
+            const allRows = document.querySelectorAll('#studentsTableBody tr');
+            for (let row of allRows) {
+                const studentId = row.id.split('-')[1];
+                const cognome = document.getElementById(`cognome-${studentId}`)?.value || '';
+                const nome = document.getElementById(`nome-${studentId}`)?.value || '';
                 
-                // Apri direttamente con il client email predefinito
-                window.location.href = mailtoLink;
+                if (cognome.trim() !== '' || nome.trim() !== '') {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function generateTabulationData() {
+            return {
+                metadata: {
+                    anno: document.getElementById('anno').value,
+                    ordine: document.getElementById('ordine').value,
+                    plesso: document.getElementById('plesso').value,
+                    classe: document.getElementById('classe').value,
+                    sezione: document.getElementById('sezione').value,
+                    disciplina: document.getElementById('disciplina').value,
+                    prova: document.getElementById('prova').value,
+                    timestamp: new Date().toISOString(),
+                    docente: currentSession.email
+                },
+                studenti: collectStudentData()
+            };
+        }
+
+        function collectStudentData() {
+            const studenti = [];
+            const allRows = document.querySelectorAll('#studentsTableBody tr');
+            
+            allRows.forEach((row) => {
+                const studentId = row.id.split('-')[1];
+                const cognome = document.getElementById(`cognome-${studentId}`)?.value || '';
+                const nome = document.getElementById(`nome-${studentId}`)?.value || '';
                 
-                // Messaggio informativo per l'utente
-                alert('Il file Excel è stato scaricato.\n\nSi sta aprendo il tuo client email con il messaggio preimpostato.\nRicordati di allegare il file scaricato prima di inviare!');
-            }, 1500);
+                if (cognome.trim() !== '' || nome.trim() !== '') {
+                    const studente = {
+                        cognome: cognome,
+                        nome: nome,
+                        certificati: document.getElementById(`certificati-${studentId}`)?.value || '',
+                        competenze: document.getElementById(`competenze-${studentId}`)?.value || '',
+                        note: document.getElementById(`note-${studentId}`)?.value || '',
+                        media: document.getElementById(`media-${studentId}`)?.textContent || '-',
+                        punteggi: {}
+                    };
+                    
+                    // Raccogli i punteggi
+                    const disciplina = document.getElementById('disciplina').value.toLowerCase();
+                    const ordine = document.getElementById('ordine').value;
+                    const isSecondaria = ordine === 'Secondaria I grado';
+                    
+                    let maxAmbiti = 2;
+                    if (disciplina === 'italiano') maxAmbiti = 4;
+                    else if (disciplina === 'matematica' && isSecondaria) maxAmbiti = 4;
+                    else if (disciplina === 'matematica') maxAmbiti = 3;
+                    
+                    for (let i = 1; i <= maxAmbiti; i++) {
+                        const punteggio = document.getElementById(`ambito${i}-${studentId}`)?.value || '';
+                        if (punteggio) {
+                            studente.punteggi[`ambito${i}`] = punteggio;
+                        }
+                    }
+                    
+                    studenti.push(studente);
+                }
+            });
+            
+            return studenti;
         }
         
         function generateFileName() {
@@ -1131,6 +1734,623 @@ Cordiali saluti`;
             
             return `${ordine}_${plesso}_${anno}_${classe}${sezione}_${disciplina}_${prova}.xlsx`;
         }
+        // === FUNZIONI PER I GRAFICI ===
+        let activeCharts = {};
+
+        function updateCharts() {
+            // Raccogli i dati filtrati
+            const filteredData = getFilteredData();
+            
+            if (filteredData.length === 0) {
+                // Pulisci i grafici se non ci sono dati ma non mostrare l'alert
+                const container = document.getElementById('chartsContainer');
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;"><p>I grafici appariranno quando inserisci dei punteggi per gli alunni</p></div>';
+                
+                // Azzera il riepilogo
+                document.getElementById('totalStudents').textContent = '0';
+                document.getElementById('overallAverage').textContent = '-';
+                
+                // Distruggi i grafici esistenti
+                Object.values(activeCharts).forEach(chart => {
+                    if (chart) chart.destroy();
+                });
+                activeCharts = {};
+                return;
+            }
+            
+            // Aggiorna il riepilogo
+            updateStatsSummary(filteredData);
+            
+            // Genera i grafici
+            generateCharts(filteredData);
+        }
+
+        function getFilteredData() {
+            const allRows = document.querySelectorAll('#studentsTableBody tr');
+            const filteredStudents = [];
+            
+            // Ottieni i filtri selezionati
+            const selectedCertificati = Array.from(document.querySelectorAll('#certificatiFilters input:checked')).map(cb => cb.value);
+            const selectedCompetenze = Array.from(document.querySelectorAll('#competenzeFilters input:checked')).map(cb => cb.value);
+            
+            allRows.forEach((row) => {
+                const studentId = row.id.split('-')[1];
+                const cognome = document.getElementById(`cognome-${studentId}`)?.value?.trim() || '';
+                const nome = document.getElementById(`nome-${studentId}`)?.value?.trim() || '';
+                
+                if (cognome !== '' || nome !== '') {
+                    const certificati = document.getElementById(`certificati-${studentId}`)?.value || '';
+                    const competenze = document.getElementById(`competenze-${studentId}`)?.value || '';
+                    
+                    // Applica i filtri
+                    const certificatiMatch = selectedCertificati.includes(certificati) || (certificati === '' && selectedCertificati.includes('no'));
+                    const competenzeMatch = selectedCompetenze.includes(competenze);
+                    
+                    if (certificatiMatch && competenzeMatch) {
+                        const student = {
+                            id: studentId,
+                            cognome: cognome,
+                            nome: nome,
+                            certificati: certificati || 'no',
+                            competenze: competenze,
+                            punteggi: [],
+                            media: parseFloat(document.getElementById(`media-${studentId}`)?.textContent) || 0
+                        };
+                        
+                        // Raccogli i punteggi degli ambiti
+                        const disciplina = document.getElementById('disciplina').value.toLowerCase();
+                        const ordine = document.getElementById('ordine').value;
+                        const isSecondaria = ordine === 'Secondaria I grado';
+                        
+                        let maxAmbiti = getMaxAmbiti(disciplina, isSecondaria);
+                        
+                        for (let i = 1; i <= maxAmbiti; i++) {
+                            const punteggio = parseFloat(document.getElementById(`ambito${i}-${studentId}`)?.value) || 0;
+                            if (punteggio > 0) {
+                                student.punteggi.push(punteggio);
+                            }
+                        }
+                        
+                        // Aggiungi solo se lo studente ha almeno un punteggio valido E una media calcolata
+                        if (student.punteggi.length > 0 && student.media > 0) {
+                            filteredStudents.push(student);
+                        }
+                    }
+                }
+            });
+            
+            return filteredStudents;
+        }
+
+        function getMaxAmbiti(disciplina, isSecondaria) {
+            if (disciplina === 'inglese' || disciplina === 'unica') {
+                return 2;
+            } else if (disciplina === 'italiano') {
+                return 4;
+            } else if (disciplina === 'matematica' && isSecondaria) {
+                return 4;
+            } else if (disciplina === 'matematica') {
+                return 3;
+            }
+            return 2;
+        }
+
+        function updateStatsSummary(data) {
+            const totalStudents = data.length;
+            const overallAverage = totalStudents > 0 ? 
+                (data.reduce((sum, student) => sum + student.media, 0) / totalStudents).toFixed(1) : 
+                '-';
+            
+            document.getElementById('totalStudents').textContent = totalStudents;
+            document.getElementById('overallAverage').textContent = overallAverage;
+        }
+
+        function generateCharts(data) {
+            const container = document.getElementById('chartsContainer');
+            container.innerHTML = '';
+            
+            // Distruggi i grafici esistenti
+            Object.values(activeCharts).forEach(chart => {
+                if (chart) chart.destroy();
+            });
+            activeCharts = {};
+            
+            const disciplina = document.getElementById('disciplina').value.toLowerCase();
+            const ordine = document.getElementById('ordine').value;
+            const isSecondaria = ordine === 'Secondaria I grado';
+            const maxAmbiti = getMaxAmbiti(disciplina, isSecondaria);
+            
+            // Genera grafici per ogni ambito + media
+            for (let i = 1; i <= maxAmbiti; i++) {
+                createAmbitoChart(container, data, i, disciplina, isSecondaria);
+            }
+            
+            // Grafico della media
+            createMediaChart(container, data);
+        }
+        
+        function createAmbitoChart(container, data, ambitoNum, disciplina, isSecondaria) {
+            const chartWrapper = document.createElement('div');
+            chartWrapper.className = 'chart-wrapper';
+            
+            // Determina il nome dell'ambito
+            const ambitoNames = getAmbitoNames(disciplina, isSecondaria);
+            const ambitoName = ambitoNames[ambitoNum - 1] || `Ambito ${ambitoNum}`;
+            
+            chartWrapper.innerHTML = `
+                <div class="chart-title">Ambito ${ambitoNum}<br>${ambitoName}</div>
+                <canvas class="chart-canvas" id="chart-ambito${ambitoNum}"></canvas>
+            `;
+            
+            container.appendChild(chartWrapper);
+            
+            // Raccogli i punteggi per questo ambito
+            const scores = data.map(student => {
+                return student.punteggi[ambitoNum - 1] || 0;
+            }).filter(score => score > 0);
+            
+            if (scores.length === 0) return;
+            
+            const average = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1);
+            
+            // Categorizza i punteggi come nell'immagine
+            const categories = {
+                'pt. < 25:': scores.filter(s => s < 25).length,
+                'pt. < 50:': scores.filter(s => s >= 25 && s < 50).length,
+                'pt. < 75:': scores.filter(s => s >= 50 && s < 75).length,
+                'pt. ≥ 75:': scores.filter(s => s >= 75).length
+            };
+            
+            const total = scores.length;
+            const percentages = Object.values(categories).map(count => ((count / total) * 100).toFixed(1));
+            
+            const ctx = document.getElementById(`chart-ambito${ambitoNum}`).getContext('2d');
+            
+            activeCharts[`ambito${ambitoNum}`] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        data: Object.values(categories),
+                        backgroundColor: ['#ff3300', '#ffcc00', '#99CC66', '#336633'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                generateLabels: function(chart) {
+                                    const data = chart.data;
+                                    return data.labels.map((label, i) => ({
+                                        text: `${label} ${percentages[i]}%`,
+                                        fillStyle: data.datasets[0].backgroundColor[i],
+                                        pointStyle: 'circle'
+                                    }));
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const percentage = percentages[context.dataIndex];
+                                    return `${context.label}: ${context.parsed} studenti (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        center: {
+                            text: `pt. medio\n${average}`,
+                            color: '#3c78d8',
+                            fontStyle: 'bold',
+                            sidePadding: 20
+                        }
+                    }
+                },
+                plugins: [{
+                    beforeDraw: function(chart) {
+                        const ctx = chart.ctx;
+                        const centerConfig = chart.config.options.elements.center;
+                        
+                        if (centerConfig) {
+                            const centerX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
+                            const centerY = chart.chartArea.top + (chart.chartArea.bottom - chart.chartArea.top) / 2;
+                            
+                            ctx.save();
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillStyle = centerConfig.color;
+                            ctx.font = 'bold 14px Ubuntu, sans-serif';
+                            
+                            const lines = centerConfig.text.split('\n');
+                            lines.forEach((line, index) => {
+                                const y = centerY + (index - (lines.length - 1) / 2) * 20;
+                                ctx.fillText(line, centerX, y);
+                            });
+                            
+                            ctx.restore();
+                        }
+                    }
+                }]
+            });
+        }
+
+        function createMediaChart(container, data) {
+            const chartWrapper = document.createElement('div');
+            chartWrapper.className = 'chart-wrapper';
+            chartWrapper.innerHTML = `
+                <div class="chart-title">Media</div>
+                <canvas class="chart-canvas" id="chart-media"></canvas>
+            `;
+            
+            container.appendChild(chartWrapper);
+            
+            const medias = data.map(student => student.media).filter(media => media > 0);
+            
+            if (medias.length === 0) return;
+            
+            const average = (medias.reduce((a, b) => a + b, 0) / medias.length).toFixed(1);
+            
+            const categories = {
+                'pt. < 25:': medias.filter(m => m < 25).length,
+                'pt. < 50:': medias.filter(m => m >= 25 && m < 50).length,
+                'pt. < 75:': medias.filter(m => m >= 50 && m < 75).length,
+                'pt. ≥ 75:': medias.filter(m => m >= 75).length
+            };
+            
+            const total = medias.length;
+            const percentages = Object.values(categories).map(count => ((count / total) * 100).toFixed(1));
+            
+            const ctx = document.getElementById('chart-media').getContext('2d');
+            
+            activeCharts['media'] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        data: Object.values(categories),
+                        backgroundColor: ['#ff3300', '#ffcc00', '#99CC66', '#336633'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                generateLabels: function(chart) {
+                                    const data = chart.data;
+                                    return data.labels.map((label, i) => ({
+                                        text: `${label} ${percentages[i]}%`,
+                                        fillStyle: data.datasets[0].backgroundColor[i],
+                                        pointStyle: 'circle'
+                                    }));
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const percentage = percentages[context.dataIndex];
+                                    return `${context.label}: ${context.parsed} studenti (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        center: {
+                            text: `pt. medio\n${average}`,
+                            color: '#ff6b35',
+                            fontStyle: 'bold',
+                            sidePadding: 20
+                        }
+                    }
+                },
+                plugins: [{
+                    beforeDraw: function(chart) {
+                        const ctx = chart.ctx;
+                        const centerConfig = chart.config.options.elements.center;
+                        
+                        if (centerConfig) {
+                            const centerX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
+                            const centerY = chart.chartArea.top + (chart.chartArea.bottom - chart.chartArea.top) / 2;
+                            
+                            ctx.save();
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillStyle = centerConfig.color;
+                            ctx.font = 'bold 16px Ubuntu, sans-serif';
+                            
+                            const lines = centerConfig.text.split('\n');
+                            lines.forEach((line, index) => {
+                                const y = centerY + (index - (lines.length - 1) / 2) * 20;
+                                ctx.fillText(line, centerX, y);
+                            });
+                            
+                            ctx.restore();
+                        }
+                    }
+                }]
+            });
+        }
+        
+        function getAmbitoNames(disciplina, isSecondaria) {
+            if (disciplina === 'inglese') {
+                return ['Comprensione scritta (Reading)', 'Comprensione orale (Listening)'];
+            } else if (disciplina === 'italiano') {
+                return ['Comprensione', 'Inferenze', 'Lessico', 'Grammatica'];
+            } else if (disciplina === 'matematica' && isSecondaria) {
+                return ['Numeri', 'Spazio e Figure', 'Dati e Previsioni', 'Relazioni e Funzioni'];
+            } else if (disciplina === 'matematica') {
+                return ['Numeri', 'Spazio e Figure', 'Relazioni, dati e previsioni'];
+            } else if (disciplina === 'unica') {
+                return ['Comprensione', 'Classificazione e Orientamento'];
+            }
+            return [];
+        }
+
+        function saveAllCharts() {
+            if (Object.keys(activeCharts).length === 0) {
+                alert('Nessun grafico da salvare. I grafici appariranno quando inserisci dei punteggi.');
+                return;
+            }
+            
+            // Crea un canvas temporaneo per combinare tutti i grafici
+            const combinedCanvas = document.createElement('canvas');
+            const ctx = combinedCanvas.getContext('2d');
+            
+            // Ottieni tutti i wrapper dei grafici
+            const chartWrappers = document.querySelectorAll('.chart-wrapper');
+            if (chartWrappers.length === 0) return;
+            
+            // Calcola le dimensioni
+            const chartsPerRow = Math.min(3, chartWrappers.length); // Max 3 grafici per riga
+            const rows = Math.ceil(chartWrappers.length / chartsPerRow);
+            const chartWidth = 400;
+            const chartHeight = 650; // Più alto per includere titolo
+            const padding = 20;
+            
+            // Imposta le dimensioni del canvas combinato
+            combinedCanvas.width = (chartWidth * chartsPerRow) + (padding * (chartsPerRow + 1));
+            combinedCanvas.height = (chartHeight * rows) + (padding * (rows + 1)) + 60; // Extra spazio per intestazione generale
+            
+            // Sfondo bianco
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, combinedCanvas.width, combinedCanvas.height);
+            
+            // Aggiungi intestazione generale
+            ctx.fillStyle = '#1a49e9';
+            ctx.font = 'bold 24px Ubuntu, Arial, sans-serif';
+            ctx.textAlign = 'center';
+            const disciplina = document.getElementById('disciplina').value;
+            const classe = document.getElementById('classe').value;
+            const sezione = document.getElementById('sezione').value;
+            const headerText = `Analisi Grafici - ${disciplina} - Classe ${classe}${sezione}`;
+            ctx.fillText(headerText, combinedCanvas.width / 2, 35);
+            
+            // Promessa per gestire il caricamento asincrono delle immagini
+            const promises = [];
+            
+            chartWrappers.forEach((wrapper, index) => {
+                const canvas = wrapper.querySelector('canvas');
+                const title = wrapper.querySelector('.chart-title').textContent;
+                
+                if (canvas) {
+                    const promise = new Promise((resolve) => {
+                        // Calcola posizione
+                        const col = index % chartsPerRow;
+                        const row = Math.floor(index / chartsPerRow);
+                        const x = padding + (col * (chartWidth + padding));
+                        const y = 70 + padding + (row * (chartHeight + padding)); // 70 per l'intestazione generale
+                        
+                        // Crea un canvas temporaneo per questo grafico con titolo
+                        const tempCanvas = document.createElement('canvas');
+                        tempCanvas.width = chartWidth;
+                        tempCanvas.height = chartHeight;
+                        const tempCtx = tempCanvas.getContext('2d');
+                        
+                        // Sfondo bianco per il grafico
+                        tempCtx.fillStyle = 'white';
+                        tempCtx.fillRect(0, 0, chartWidth, chartHeight);
+                        
+                        // Aggiungi il titolo
+                        tempCtx.fillStyle = '#3c78d8';
+                        tempCtx.font = 'bold 18px Ubuntu, Arial, sans-serif';
+                        tempCtx.textAlign = 'center';
+                        
+                        // Suddividi il titolo su più righe se necessario
+                        const titleLines = title.split('\n');
+                        titleLines.forEach((line, lineIndex) => {
+                            tempCtx.fillText(line, chartWidth / 2, 25 + (lineIndex * 22));
+                        });
+                        
+                        // Calcola l'area per il grafico (sotto il titolo)
+                        const graphArea = {
+                            x: 20,
+                            y: 60,
+                            width: chartWidth - 40,
+                            height: chartHeight - 80
+                        };
+                        
+                        // Disegna il grafico ridimensionato
+                        tempCtx.drawImage(canvas, 
+                            graphArea.x, graphArea.y, 
+                            graphArea.width, graphArea.height
+                        );
+                        
+                        // Aggiungi il grafico al canvas combinato
+                        ctx.drawImage(tempCanvas, x, y);
+                        
+                        resolve();
+                    });
+                    promises.push(promise);
+                }
+            });
+            
+            // Quando tutti i grafici sono stati disegnati, salva l'immagine
+            Promise.all(promises).then(() => {
+                const url = combinedCanvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                
+                // Nome file più descrittivo
+                const anno = document.getElementById('anno').value.replace('/', '');
+                const ordine = document.getElementById('ordine').value.split(' ')[0];
+                const plesso = document.getElementById('plesso').value.replace('.', '').replace(' ', '');
+                const prova = document.getElementById('prova').value;
+                
+                link.download = `Grafici_${disciplina}_${ordine}_${plesso}_${classe}${sezione}_${prova}_${getCurrentDateString()}.png`;
+                link.href = url;
+                link.click();
+                
+                alert('✅ Immagine combinata salvata con successo!');
+            });
+        }
+
+        function exportChartsReport() {
+            if (Object.keys(activeCharts).length === 0) {
+                alert('Genera prima i grafici per esportare il report.');
+                return;
+            }
+            
+            const filteredData = getFilteredData();
+            const reportData = generateReportData(filteredData);
+            
+            // Crea un nuovo workbook per il report
+            const workbook = XLSX.utils.book_new();
+            
+            // Foglio con i dati analizzati
+            const reportSheet = XLSX.utils.aoa_to_sheet(reportData);
+            XLSX.utils.book_append_sheet(workbook, reportSheet, "Report Analisi");
+            
+            // Nome file
+            const fileName = `Report_Analisi_${getCurrentDateString()}.xlsx`;
+            
+            // Scarica il file
+            XLSX.writeFile(workbook, fileName);
+            
+            // Salva anche tutti i grafici
+            saveAllCharts();
+        }
+
+        function generateReportData(data) {
+            const disciplina = document.getElementById('disciplina').value;
+            const ordine = document.getElementById('ordine').value;
+            const anno = document.getElementById('anno').value;
+            const classe = document.getElementById('classe').value;
+            const sezione = document.getElementById('sezione').value;
+            const prova = document.getElementById('prova').value;
+            
+            const reportData = [
+                ['REPORT ANALISI PROVE PARALLELE IC PUDDU'],
+                [''],
+                ['Anno Scolastico:', anno],
+                ['Ordine:', ordine],
+                ['Classe/Anno:', classe],
+                ['Sezione:', sezione],
+                ['Disciplina:', disciplina],
+                ['Tipo Prova:', prova],
+                ['Data Report:', new Date().toLocaleDateString('it-IT')],
+                ['Studenti Analizzati:', data.length],
+                [''],
+                ['RIEPILOGO STATISTICO'],
+                ['Categoria', 'Numero Studenti', 'Percentuale'],
+            ];
+            
+            // Calcola le statistiche per la media
+            const medias = data.map(s => s.media).filter(m => m > 0);
+            const totalStudents = medias.length;
+            
+            if (totalStudents > 0) {
+                const stats = {
+                    'pt. < 25': medias.filter(m => m < 25).length,
+                    'pt. < 50': medias.filter(m => m >= 25 && m < 50).length,
+                    'pt. < 75': medias.filter(m => m >= 50 && m < 75).length,
+                    'pt. ≥ 75': medias.filter(m => m >= 75).length
+                };
+                
+                Object.entries(stats).forEach(([category, count]) => {
+                    const percentage = ((count / totalStudents) * 100).toFixed(1);
+                    reportData.push([category, count, `${percentage}%`]);
+                });
+                
+                const overallAverage = (medias.reduce((a, b) => a + b, 0) / totalStudents).toFixed(1);
+                reportData.push(['', '', '']);
+                reportData.push(['Media Complessiva:', overallAverage, '']);
+            }
+            
+            reportData.push(['']);
+            reportData.push(['DETTAGLIO ALUNNI']);
+            reportData.push(['Cognome', 'Nome', 'Certificati', 'Comp. Linguistiche', 'Media', 'Ambito 1', 'Ambito 2', 'Ambito 3', 'Ambito 4']);
+            
+            // Aggiungi i dati degli studenti
+            data.forEach(student => {
+                const row = [
+                    student.cognome,
+                    student.nome,
+                    student.certificati,
+                    student.competenze,
+                    student.media
+                ];
+                
+                // Aggiungi i punteggi degli ambiti
+                for (let i = 0; i < 4; i++) {
+                    row.push(student.punteggi[i] || '');
+                }
+                
+                reportData.push(row);
+            });
+            
+            return reportData;
+        }
+
+        function getCurrentDateString() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            return `${year}${month}${day}_${hours}${minutes}`;
+        }
+        // Modifica anche la funzione che carica la sessione salvata
+        document.addEventListener('DOMContentLoaded', function() {
+            // Controlla se c'è una sessione salvata
+            const savedSession = localStorage.getItem('icPudduSession');
+            
+            if (savedSession) {
+                try {
+                    const session = JSON.parse(savedSession);
+                    
+                    if (session.expires > Date.now()) {
+                        currentSession = session;
+                        showMainApp();
+                        return;
+                    } else {
+                        localStorage.removeItem('icPudduSession');
+                    }
+                } catch (e) {
+                    console.error('Errore parsing sessione:', e);
+                    localStorage.removeItem('icPudduSession');
+                }
+            }
+            
+            // Mostra schermata di login
+            showLogin();
+        });
+        // === FINE FUNZIONI GRAFICI ===
     </script>
 </body>
 </html>
