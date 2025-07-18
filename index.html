@@ -29,6 +29,43 @@
             color: #1a49e9;
             margin-bottom: 30px;
             font-size: 24px;
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Aggiungi questa nuova regola dopo h1 */
+        .header-logo {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100px;
+            width: auto;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .header-logo:hover {
+            opacity: 1;
+        }
+
+        /* Responsive per mobile */
+        @media (max-width: 768px) {
+            h1 {
+                flex-direction: column;
+                min-height: auto;
+                padding-top: 70px;
+            }
+            
+            .header-logo {
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                height: 60px;
+            }
         }
         
         .form-header {
@@ -504,7 +541,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>Tabulazione prove parallele IC Puddu</h1>
+        <h1>
+            <img src="https://raw.githubusercontent.com/Emanuele-ElBasri/pp-puddu/refs/heads/main/ICS_Puddu_logo.svg" 
+            alt="Logo IC Puddu" 
+            class="header-logo">
+            Tabulazione prove parallele IC Puddu
+        </h1>
 
         <!-- Barra informazioni utente -->
         <div id="userInfo" class="user-info" style="display: none;">
