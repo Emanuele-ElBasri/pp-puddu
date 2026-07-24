@@ -883,7 +883,11 @@
             loginBtn.textContent = 'Invio in corso...';
             
             try {
-                const response = await fetch(`${APPS_SCRIPT_URL}?action=login&email=${encodeURIComponent(email)}`);
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ action: 'login', email: email })
+                });
                 const result = await response.json();
                 
                 if (result.success) {
@@ -917,7 +921,11 @@
             verifyBtn.textContent = 'Verifica...';
             
             try {
-                const response = await fetch(`${APPS_SCRIPT_URL}?action=verify&email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`);
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ action: 'verify', email: email, code: code })
+                });
                 const result = await response.json();
                 
                 if (result.success) {
