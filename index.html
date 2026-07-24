@@ -856,6 +856,9 @@
                 document.getElementById('userEmail').textContent = currentSession.email;
             }
             
+            // Pulisci eventuali righe esistenti prima di ricrearle
+            document.getElementById('studentsTableBody').innerHTML = '';
+            
             // Crea le righe degli studenti
             for (let i = 1; i <= 30; i++) {
                 createEmptyStudentRow(i);
@@ -1633,7 +1636,13 @@
             return tabelleData;
         }
 
+        let isTransmitting = false;
+
         async function transmitData() {
+            if (isTransmitting) {
+                return; // trasmissione già in corso, ignora
+            }
+            
             if (!currentSession) {
                 alert('Sessione scaduta. Effettua di nuovo il login.');
                 logout();
@@ -1646,6 +1655,7 @@
                 return;
             }
             
+            isTransmitting = true;
             const saveBtn = event.target;
             const originalText = saveBtn.textContent;
             saveBtn.disabled = true;
@@ -1685,10 +1695,11 @@
                 
             } catch (error) {
                 alert('❌ Errore nella trasmissione: ' + error.message);
+            } finally {
+                isTransmitting = false;
+                saveBtn.disabled = false;
+                saveBtn.textContent = originalText;
             }
-            
-            saveBtn.disabled = false;
-            saveBtn.textContent = originalText;
         }
 
         function saveExcel() {
@@ -2380,31 +2391,6 @@
             
             return `${year}${month}${day}_${hours}${minutes}`;
         }
-        // Modifica anche la funzione che carica la sessione salvata
-        document.addEventListener('DOMContentLoaded', function() {
-            // Controlla se c'è una sessione salvata
-            const savedSession = localStorage.getItem('icPudduSession');
-            
-            if (savedSession) {
-                try {
-                    const session = JSON.parse(savedSession);
-                    
-                    if (session.expires > Date.now()) {
-                        currentSession = session;
-                        showMainApp();
-                        return;
-                    } else {
-                        localStorage.removeItem('icPudduSession');
-                    }
-                } catch (e) {
-                    console.error('Errore parsing sessione:', e);
-                    localStorage.removeItem('icPudduSession');
-                }
-            }
-            
-            // Mostra schermata di login
-            showLogin();
-        });
         // === FINE FUNZIONI GRAFICI ===
     </script>
 </body>
