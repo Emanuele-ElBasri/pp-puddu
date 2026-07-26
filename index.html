@@ -1190,15 +1190,11 @@
         }
         
         function capitalizeInput(input) {
-            // Capitalizza la prima lettera di ogni parola
-            const words = input.value.split(' ');
-            const capitalizedWords = words.map(word => {
-                if (word.length > 0) {
-                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-                }
-                return word;
-            });
-            input.value = capitalizedWords.join(' ');
+            const posizione = input.selectionStart;
+            input.value = input.value
+                .toLowerCase()
+                .replace(/(^|[\s'’\-])(\p{Ll})/gu, (m, sep, lettera) => sep + lettera.toUpperCase());
+            input.setSelectionRange(posizione, posizione);
         }
         
         function addStudent() {
@@ -1853,6 +1849,7 @@
                     const competenzeMatch = selectedCompetenze.includes(competenze);
                     
                     if (certificatiMatch && competenzeMatch) {
+                        const mediaText = document.getElementById(`media-${studentId}`)?.textContent || '-';
                         const student = {
                             id: studentId,
                             cognome: cognome,
@@ -1860,7 +1857,7 @@
                             certificati: certificati || 'no',
                             competenze: competenze,
                             punteggi: [],
-                            media: parseFloat(document.getElementById(`media-${studentId}`)?.textContent) || 0
+                            media: mediaText === '-' ? null : parseFloat(mediaText)
                         };
                         
                         // Raccogli i punteggi degli ambiti
@@ -1871,14 +1868,13 @@
                         let maxAmbiti = getMaxAmbiti(disciplina, isSecondaria);
                         
                         for (let i = 1; i <= maxAmbiti; i++) {
-                            const punteggio = parseFloat(document.getElementById(`ambito${i}-${studentId}`)?.value) || 0;
-                            if (punteggio > 0) {
-                                student.punteggi.push(punteggio);
-                            }
+                            const raw = document.getElementById(`ambito${i}-${studentId}`)?.value || '';
+                            const normalizzato = raw.replace(',', '.');
+                            student.punteggi.push(normalizzato === '' ? null : parseFloat(normalizzato));
                         }
                         
-                        // Aggiungi solo se lo studente ha almeno un punteggio valido E una media calcolata
-                        if (student.punteggi.length > 0 && student.media > 0) {
+                        // Includi se ha almeno un punteggio inserito (anche se pari a 0)
+                        if (student.punteggi.some(p => p !== null)) {
                             filteredStudents.push(student);
                         }
                     }
@@ -1903,9 +1899,9 @@
 
         function updateStatsSummary(data) {
             const totalStudents = data.length;
-            const overallAverage = totalStudents > 0 ? 
-                (data.reduce((sum, student) => sum + student.media, 0) / totalStudents).toFixed(1) : 
-                '-';
+            const conMedia = data.filter(s => s.media !== null && !isNaN(s.media));
+            const overallAverage = conMedia.length > 0 ?
+                (conMedia.reduce((sum, s) => sum + s.media, 0) / conMedia.length).toFixed(1) : '-';
             
             document.getElementById('totalStudents').textContent = totalStudents;
             document.getElementById('overallAverage').textContent = overallAverage;
@@ -1951,9 +1947,9 @@
             container.appendChild(chartWrapper);
             
             // Raccogli i punteggi per questo ambito
-            const scores = data.map(student => {
-                return student.punteggi[ambitoNum - 1] || 0;
-            }).filter(score => score > 0);
+            const scores = data
+                .map(student => student.punteggi[ambitoNum - 1])
+                .filter(score => score !== null && score !== undefined && !isNaN(score));
             
             if (scores.length === 0) return;
             
@@ -2058,7 +2054,7 @@
             
             container.appendChild(chartWrapper);
             
-            const medias = data.map(student => student.media).filter(media => media > 0);
+            const medias = data.map(student => student.media).filter(m => m !== null && !isNaN(m));
             
             if (medias.length === 0) return;
             
@@ -2335,7 +2331,7 @@
             ];
             
             // Calcola le statistiche per la media
-            const medias = data.map(s => s.media).filter(m => m > 0);
+            const medias = data.map(s => s.media).filter(m => m !== null && !isNaN(m));
             const totalStudents = medias.length;
             
             if (totalStudents > 0) {
